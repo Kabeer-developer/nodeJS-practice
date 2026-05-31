@@ -12,33 +12,35 @@ app.get("/",(req,res)=> {
 
 app.get("/users",(req,res)=> {
     res.status(200).json(users);
-});
+})
 
 app.get("/users/:id",(req,res)=> {
-    const user = users.find(u=> u.id === parseInt(req.params.id));
-    if(!user){
-       return res.status(404).json({message : "Not Found"});
-    }
+    const user = users.find(u=> u.id==req.params.id);
+    if(!user) return res.status(404).json({message : "User Not Found"});
     res.status(200).json(user);
-});
+})
 
-app.post("/create",(req,res)=> {
+app.post("/new",(req,res)=> {
     const {username, email} = req.body;
-    const newUser = {
-        id : users.length+1,
-        username,
-        email,
-    };
-    users.push(newUser);
-    res.status(201).json(newUser);
+    
+    const exist = users.find(u=> u.email == email || u.username == username);
+    if(exist){
+        res.status(400).json({message :"Already Exist"});
+    }
+    
+     const newUser = {
+            id:users.length+1,
+            username,
+            email,
+        }
+        users.push(newUser);
+        res.status(201).json(newUser);
 });
 
 app.put("/users/:id",(req,res)=> {
-    const {username , email} = req.body;
-    const user = users.find(u=> u.id === parseInt(req.params.id));
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
+    const {username,email} = req.body;
+    const user = users.find(u=> u.id == req.params.id);
+    if(!user) return res.status(404).json({message : "User Not Found"});
     user.username = username || user.username;
     user.email = email || user.email;
     res.status(200).json(user);
