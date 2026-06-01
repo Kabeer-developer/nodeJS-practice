@@ -3,7 +3,8 @@ import express from "express"
 import connectDb from "./db.js"
 import User from "./schema.js"
 import dotenv from "dotenv"
-
+import dns from "dns"
+dns.setServers(["1.1.1.1","8.8.8.8"]);
 const app = express();
 dotenv.config();
 connectDb();
@@ -31,21 +32,36 @@ app.post("/register",async (req,res)=> {
 });
 
 app.get("/users", async(req,res)=> {
-    try{
-        const users = await User.find().select("-password");
-        res.status(200).json({users});
-    } catch(e){
-        res.json({message : "could not fetch"});
+   try{
+    const users = await User.find().select("-password");
+    if(!users) {
+        res.status(400).json({message : "User not found"});
     }
+    res.status(200).json(users);
+   } catch(e){
+    res.json(e);
+   }
 });
 
+app.get("/users/:id", async (req,res)=> {
+    try{
+        const user = await User.findById(req.params.id);
+    if(!user){
+        res.status(404).json({message:"User not found"});
+    }
+    res.status(200).json(user);
+    } catch(e){
+res.json(e);
+}
+})
 app.put("/users/:id", async(req,res)=> {
     try{
-       const {username,password} = req.body;
-       const updatedUser = await User.findByIdAndUpdate(req.params.id,{username,password}, {new:true,runValidators:true});
-       if(!updatedUser){
-        res.status(404).json({message : "User not found"});
-       }
+      const {username,password} = req.body;
+      const updatedUser = await User.findByIdAndUpdate(req.params.id,{username,password},{new:true,renValidator:true});
+      if(!updatedUser) {
+        res.status(400).json({message : "User not found"})
+      }
+    
        res.status(200).json({message : "Updated Succesfully",
                             user : updatedUser }
        );
