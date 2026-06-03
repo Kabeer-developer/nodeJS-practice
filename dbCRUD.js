@@ -3,8 +3,8 @@ import express from "express"
 import connectDb from "./db.js"
 import User from "./schema.js"
 import dotenv from "dotenv"
-import dns from "dns"
-dns.setServers(["1.1.1.1","8.8.8.8"]);
+// import dns from "dns"
+// dns.setServers(["1.1.1.1","8.8.8.8"]);
 const app = express();
 dotenv.config();
 connectDb();
