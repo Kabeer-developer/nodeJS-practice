@@ -1,5 +1,5 @@
-const express = require("express");
-const jwt = require("jsonwebtoken")
+import express from "express";
+import jwt from "jsonwebtoken"
 const SECRET = "abcdef";
 
 const app = express();
@@ -31,6 +31,6 @@ app.get("/protected",auth,(req,res)=> {
     res.json({message : "secret data", user:req.user});
 })
 
-PORT = 5000;
+const PORT = 5000;
 
 app.listen(PORT,()=> console.log(`server is running on http://localhost:${PORT}`))
