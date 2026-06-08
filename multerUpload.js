@@ -12,24 +12,24 @@ app.get("/",(req,res)=> {
 
 const storage = multer.diskStorage({
     destination : (req,file,cb)=> {
-        cb(null,"uploads/");
+        cb(null,"nodeJS-practice/uploads/");
     },
     filename : (req,file,cb)=> {
-        cb(null,Date.now()+path.extname(file.originalname));
+        cb(null,Date.now+path.extname(file.originalname));
     }
-});
-
+})
 const upload = multer({storage : storage});
 
-app.post("/upload",upload.single("file"),(req,res)=> {
-    if(!req.file) {
-        res.json({message : "select a file"});
+app.post("/upload",upload.single("file"),(req,res,file)=> {
+    if(!req.file){
+        res.json({message : "Please select a file"});
     }
-    res.json({
-        message : "File Uploaded Succesfully",
-        file : req.file,
-    })
+    res.json({message : "Uploaded Succesfully",
+               file: req.file,
+    }
+    )
 })
+
 const PORT = 5000;
 
 app.listen(PORT,()=> console.log(`API is running on http://localhost:${PORT}/`))
